@@ -2,33 +2,32 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package org.mangui.hls.stream {
-    import org.mangui.hls.constant.HLSPlayStates;
-    import org.mangui.hls.constant.HLSSeekStates;
-    import org.mangui.hls.controller.BufferThresholdController;
-    import org.mangui.hls.demux.ID3Tag;
-    import org.mangui.hls.event.HLSError;
-    import org.mangui.hls.event.HLSEvent;
-    import org.mangui.hls.event.HLSPlayMetrics;
-    import org.mangui.hls.flv.FLVTag;
-    import org.mangui.hls.HLS;
-    import org.mangui.hls.HLSSettings;
+import by.blooddy.crypto.Base64;
 
-    import by.blooddy.crypto.Base64;
+import flash.events.Event;
+import flash.events.NetStatusEvent;
+import flash.events.TimerEvent;
+import flash.net.NetConnection;
+import flash.net.NetStream;
+import flash.net.NetStreamAppendBytesAction;
+import flash.net.NetStreamPlayOptions;
+import flash.utils.ByteArray;
+import flash.utils.Timer;
 
-    import flash.events.Event;
-    import flash.events.NetStatusEvent;
-    import flash.events.TimerEvent;
-    import flash.net.NetConnection;
-    import flash.net.NetStream;
-    import flash.net.NetStreamAppendBytesAction;
-    import flash.net.NetStreamInfo;
-    import flash.net.NetStreamPlayOptions;
-    import flash.utils.ByteArray;
-    import flash.utils.Timer;
+import org.mangui.hls.HLS;
+import org.mangui.hls.HLSSettings;
+import org.mangui.hls.constant.HLSPlayStates;
+import org.mangui.hls.constant.HLSSeekStates;
+import org.mangui.hls.controller.BufferThresholdController;
+import org.mangui.hls.demux.ID3Tag;
+import org.mangui.hls.event.HLSError;
+import org.mangui.hls.event.HLSEvent;
+import org.mangui.hls.event.HLSPlayMetrics;
+import org.mangui.hls.flv.FLVTag;
 
-    CONFIG::LOGGING {
-        import org.mangui.hls.utils.Log;
-    }
+CONFIG::LOGGING {
+    import org.mangui.hls.utils.Log;
+}
     /** Class that overrides standard flash.net.NetStream class, keeps the buffer filled, handles seek and play state
      *
      * play state transition :
@@ -340,8 +339,8 @@ package org.mangui.hls.stream {
         }
 
         /* also include skipped duration in get time() so that play position will match fragment position */
-        override public function get time() : Number {
-            return super.time+_skippedDuration;
+        public function get fragmentTime() : Number {
+            return super.time + _skippedDuration;
         }
 
         /* return nb of dropped Frames since session started */

@@ -3,35 +3,35 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package org.mangui.hls {
 
-    import flash.display.Stage;
-    import flash.events.Event;
-    import flash.events.EventDispatcher;
-    import flash.net.NetConnection;
-    import flash.net.NetStream;
-    import flash.net.URLLoader;
-    import flash.net.URLStream;
-    import org.mangui.hls.constant.HLSSeekStates;
-    import org.mangui.hls.controller.AudioTrackController;
-    import org.mangui.hls.controller.LevelController;
-    import org.mangui.hls.event.HLSEvent;
-    import org.mangui.hls.loader.AltAudioLevelLoader;
-    import org.mangui.hls.loader.LevelLoader;
-    import org.mangui.hls.model.AudioTrack;
-    import org.mangui.hls.model.Level;
-    import org.mangui.hls.playlist.AltAudioTrack;
-    import org.mangui.hls.stream.HLSNetStream;
-    import org.mangui.hls.stream.StreamBuffer;
+import flash.display.Stage;
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.net.NetConnection;
+import flash.net.URLLoader;
+import flash.net.URLStream;
 
-    CONFIG::LOGGING {
-        import org.mangui.hls.utils.Log;
-    }
+import org.mangui.hls.constant.HLSSeekStates;
+import org.mangui.hls.controller.AudioTrackController;
+import org.mangui.hls.controller.LevelController;
+import org.mangui.hls.event.HLSEvent;
+import org.mangui.hls.loader.AltAudioLevelLoader;
+import org.mangui.hls.loader.LevelLoader;
+import org.mangui.hls.model.AudioTrack;
+import org.mangui.hls.model.Level;
+import org.mangui.hls.playlist.AltAudioTrack;
+import org.mangui.hls.stream.HLSNetStream;
+import org.mangui.hls.stream.StreamBuffer;
+
+CONFIG::LOGGING {
+    import org.mangui.hls.utils.Log;
+}
     /** Class that manages the streaming process. **/
     public class HLS extends EventDispatcher {
         private var _levelLoader : LevelLoader;
         private var _altAudioLevelLoader : AltAudioLevelLoader;
         private var _audioTrackController : AudioTrackController;
         private var _levelController : LevelController;
-        private var _streamBuffer : StreamBuffer;
+        internal var _streamBuffer : StreamBuffer;
         /** HLS NetStream **/
         private var _hlsNetStream : HLSNetStream;
         /** HLS URLStream/URLLoader **/
@@ -56,9 +56,16 @@ package org.mangui.hls {
             // default loader
             var connection : NetConnection = new NetConnection();
             connection.connect(null);
-            _hlsNetStream = new HLSNetStream(connection, this, _streamBuffer);
+            _hlsNetStream = createNetStream();
             this.addEventListener(HLSEvent.LEVEL_SWITCH, _levelSwitchHandler);
         };
+
+        protected function createNetStream():HLSNetStream {
+            var connection : NetConnection = new NetConnection();
+            connection.connect(null);
+            return new HLSNetStream(connection, this, _streamBuffer);
+        }
+
 
         /** Forward internal errors. **/
         override public function dispatchEvent(event : Event) : Boolean {
@@ -228,7 +235,7 @@ package org.mangui.hls {
         };
 
         /** return HLS NetStream **/
-        public function get stream() : NetStream {
+        public function get stream() : HLSNetStream  {
             return _hlsNetStream;
         }
 

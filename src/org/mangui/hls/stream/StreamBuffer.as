@@ -2,32 +2,32 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package org.mangui.hls.stream {
-    import flash.events.Event;
-    import flash.events.TimerEvent;
-    import flash.utils.Dictionary;
-    import flash.utils.getTimer;
-    import flash.utils.Timer;
-    import org.mangui.hls.constant.HLSLoaderTypes;
-    import org.mangui.hls.constant.HLSPlayStates;
-    import org.mangui.hls.constant.HLSSeekMode;
-    import org.mangui.hls.constant.HLSSeekStates;
-    import org.mangui.hls.constant.HLSTypes;
-    import org.mangui.hls.controller.AudioTrackController;
-    import org.mangui.hls.controller.LevelController;
-    import org.mangui.hls.event.HLSEvent;
-    import org.mangui.hls.event.HLSMediatime;
-    import org.mangui.hls.flv.FLVTag;
-    import org.mangui.hls.HLS;
-    import org.mangui.hls.HLSSettings;
-    import org.mangui.hls.loader.AltAudioFragmentLoader;
-    import org.mangui.hls.loader.FragmentLoader;
-    import org.mangui.hls.model.AudioTrack;
-    import org.mangui.hls.model.Fragment;
-    import org.mangui.hls.model.Level;
+import flash.events.Event;
+import flash.events.TimerEvent;
+import flash.utils.Timer;
+import flash.utils.getTimer;
 
-    CONFIG::LOGGING {
-        import org.mangui.hls.utils.Log;
-    }
+import org.mangui.hls.HLS;
+import org.mangui.hls.HLSSettings;
+import org.mangui.hls.constant.HLSLoaderTypes;
+import org.mangui.hls.constant.HLSPlayStates;
+import org.mangui.hls.constant.HLSSeekMode;
+import org.mangui.hls.constant.HLSSeekStates;
+import org.mangui.hls.constant.HLSTypes;
+import org.mangui.hls.controller.AudioTrackController;
+import org.mangui.hls.controller.LevelController;
+import org.mangui.hls.event.HLSEvent;
+import org.mangui.hls.event.HLSMediatime;
+import org.mangui.hls.flv.FLVTag;
+import org.mangui.hls.loader.AltAudioFragmentLoader;
+import org.mangui.hls.loader.FragmentLoader;
+import org.mangui.hls.model.AudioTrack;
+import org.mangui.hls.model.Fragment;
+import org.mangui.hls.model.Level;
+
+CONFIG::LOGGING {
+    import org.mangui.hls.utils.Log;
+}
     /*
      * intermediate FLV Tag Buffer
      *  input : FLV tags retrieved from different fragment loaders (video/alt-audio...)
@@ -379,7 +379,7 @@ package org.mangui.hls.stream {
                 case HLSSeekStates.IDLE:
                 default:
                     /** Relative playback position = Absolute Position (which is Absolute seek position + NetStream playback time) - playlist sliding **/
-                    var pos: Number = _seekPositionReal + _hls.stream.time - _liveSlidingMain;
+                    var pos: Number = _seekPositionReal + _hls.stream.fragmentTime - _liveSlidingMain;
                     if(isNaN(pos)) {
                         pos = 0;
                     }
@@ -1290,7 +1290,6 @@ package org.mangui.hls.stream {
 
 import org.mangui.hls.constant.HLSLoaderTypes;
 import org.mangui.hls.flv.FLVTag;
-
 
 class FLVData {
     public var tag : FLVTag;
