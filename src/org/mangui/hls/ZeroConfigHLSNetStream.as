@@ -13,7 +13,14 @@ public class ZeroConfigHLSNetStream extends HLSNetStream {
         return connection;
     }
 
+    private static const MAX_PAUSE_DELAY:int = 20000;
+
     private var _zeroHLS:ZeroConfigHLS;
+
+    private var _lastPlaylist:String;
+    private var _manifestLoaded:Boolean;
+    private var _pauseBeforeManifestLoaded:Boolean;
+    private var _lastPauseTime:Number;
 
     private var _seekPosition:Number = NaN;
 
@@ -26,9 +33,31 @@ public class ZeroConfigHLSNetStream extends HLSNetStream {
     }
 
     override public function play(...rest):void {
-        var file:String = rest[0];
-        _seekPosition = NaN;
-        _zeroHLS.load(file);
+        if (rest[0] != _lastPlaylist || currentTimestamp - _lastPauseTime >= MAX_PAUSE_DELAY) {
+            _lastPlaylist = rest[0];
+            _seekPosition = NaN;
+            _zeroHLS.load(_lastPlaylist);
+        } else if (_lastPlaylist) {
+            super.resume();
+        }
+    }
+
+    override public function pause():void {
+        trace("HLS Pause. Playback state: " + playbackState);
+        if (!_manifestLoaded) {
+            _pauseBeforeManifestLoaded = true;
+        }
+        _lastPauseTime = currentTimestamp;
+        super.pause();
+    }
+
+    override public function resume():void {
+        if (_pauseBeforeManifestLoaded) {
+            _pauseBeforeManifestLoaded = false;
+            super.play(null, -1);
+        } else {
+            super.resume();
+        }
     }
 
     override public function seek(position:Number):void {
@@ -58,7 +87,10 @@ public class ZeroConfigHLSNetStream extends HLSNetStream {
     }
 
     private function onManifestLoaded(event:HLSEvent):void {
-        super.play(null, -1);
+        _manifestLoaded = true;
+        if (!_pauseBeforeManifestLoaded) {
+            super.play(null, -1);
+        }
     }
 
     private function onPlaybackComplete(event:HLSEvent):void {
@@ -78,6 +110,10 @@ public class ZeroConfigHLSNetStream extends HLSNetStream {
 
     public function get hls():HLS {
         return _zeroHLS;
+    }
+
+    private function get currentTimestamp():Number {
+        return (new Date()).valueOf();
     }
 }
 }
