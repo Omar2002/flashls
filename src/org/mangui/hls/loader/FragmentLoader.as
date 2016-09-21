@@ -3,36 +3,36 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package org.mangui.hls.loader {
 
-    import flash.events.*;
-    import flash.net.*;
-    import flash.utils.ByteArray;
-    import flash.utils.Timer;
-    import flash.utils.getTimer;
-    
-    import org.mangui.hls.HLS;
-    import org.mangui.hls.HLSSettings;
-    import org.mangui.hls.constant.HLSLoaderTypes;
-    import org.mangui.hls.constant.HLSTypes;
-    import org.mangui.hls.controller.AudioTrackController;
-    import org.mangui.hls.controller.LevelController;
-    import org.mangui.hls.demux.DemuxHelper;
-    import org.mangui.hls.demux.Demuxer;
-    import org.mangui.hls.demux.ID3Tag;
-    import org.mangui.hls.event.HLSError;
-    import org.mangui.hls.event.HLSEvent;
-    import org.mangui.hls.event.HLSLoadMetrics;
-    import org.mangui.hls.flv.FLVTag;
-    import org.mangui.hls.model.AudioTrack;
-    import org.mangui.hls.model.Fragment;
-    import org.mangui.hls.model.FragmentData;
-    import org.mangui.hls.model.Level;
-    import org.mangui.hls.stream.StreamBuffer;
-    import org.mangui.hls.utils.AES;
+import flash.events.*;
+import flash.net.*;
+import flash.utils.ByteArray;
+import flash.utils.Timer;
+import flash.utils.getTimer;
 
-    CONFIG::LOGGING {
-        import org.mangui.hls.utils.Log;
-        import org.mangui.hls.utils.Hex;
-    }
+import org.mangui.hls.HLS;
+import org.mangui.hls.HLSSettings;
+import org.mangui.hls.constant.HLSLoaderTypes;
+import org.mangui.hls.constant.HLSTypes;
+import org.mangui.hls.controller.AudioTrackController;
+import org.mangui.hls.controller.LevelController;
+import org.mangui.hls.demux.DemuxHelper;
+import org.mangui.hls.demux.Demuxer;
+import org.mangui.hls.demux.ID3Tag;
+import org.mangui.hls.event.HLSError;
+import org.mangui.hls.event.HLSEvent;
+import org.mangui.hls.event.HLSLoadMetrics;
+import org.mangui.hls.flv.FLVTag;
+import org.mangui.hls.model.AudioTrack;
+import org.mangui.hls.model.Fragment;
+import org.mangui.hls.model.FragmentData;
+import org.mangui.hls.model.Level;
+import org.mangui.hls.stream.StreamBuffer;
+import org.mangui.hls.utils.AES;
+
+CONFIG::LOGGING {
+    import org.mangui.hls.utils.Hex;
+    import org.mangui.hls.utils.Log;
+}
     /** Class that fetches fragments. **/
     public class FragmentLoader {
         /** Reference to the HLS controller. **/
@@ -455,7 +455,7 @@ package org.mangui.hls.loader {
                 CONFIG::LOGGING {
                     Log.warn("error parsing fragment, skip it and load next one");
                 }
-                var tags : Vector.<FLVTag> = tags = new Vector.<FLVTag>();
+                var tags : Vector.<FLVTag> = new Vector.<FLVTag>();
                 tags.push(_fragCurrent.getSkippedTag());
                 // send skipped FLV tag to StreamBuffer
                 _streamBuffer.appendTags(HLSLoaderTypes.FRAGMENT_MAIN,_fragCurrent.level,_fragCurrent.seqnum ,tags,_fragCurrent.data.pts_start_computed, _fragCurrent.data.pts_start_computed + 1000*_fragCurrent.duration, _fragCurrent.continuity, _fragCurrent.start_time);
@@ -484,7 +484,7 @@ package org.mangui.hls.loader {
         */
         private function _fraghandleIOError(message : String) : void {
             var hlsError : HLSError = new HLSError(HLSError.FRAGMENT_LOADING_ERROR, _fragCurrent.url, "I/O Error while loading fragment:" + message);
-            _hls.dispatchEvent(new HLSEvent(HLSEvent.WARNING, hlsError));
+            _hls.dispatchEvent(new HLSEvent(HLSEvent.WARNING, hlsError, _fragCurrent));
             CONFIG::LOGGING {
                 Log.warn(hlsError.msg);
             }
@@ -537,7 +537,7 @@ package org.mangui.hls.loader {
                         CONFIG::LOGGING {
                             Log.warn("max fragment load retry reached, skip fragment and load next one.");
                         }
-                        var tags : Vector.<FLVTag> = tags = new Vector.<FLVTag>();
+                        var tags : Vector.<FLVTag> = new Vector.<FLVTag>();
                         tags.push(_fragCurrent.getSkippedTag());
                         // send skipped FLV tag to StreamBuffer
                         _streamBuffer.appendTags(HLSLoaderTypes.FRAGMENT_MAIN,_fragCurrent.level,_fragCurrent.seqnum ,tags,_fragCurrent.data.pts_start_computed, _fragCurrent.data.pts_start_computed + 1000*_fragCurrent.duration, _fragCurrent.continuity, _fragCurrent.start_time);

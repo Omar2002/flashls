@@ -2,11 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package org.mangui.hls.event {
-    import org.mangui.hls.model.Level;
+import flash.events.Event;
 
-    import flash.events.Event;
+import org.mangui.hls.model.Fragment;
+import org.mangui.hls.model.Level;
 
-    /** Event fired when an error prevents playback. **/
+/** Event fired when an error prevents playback. **/
     public class HLSEvent extends Event {
         /** Identifier for a manifest loading event, triggered after a call to hls.load(url) **/
         public static const MANIFEST_LOADING : String = "hlsEventManifestLoading";
@@ -101,6 +102,7 @@ package org.mangui.hls.event {
         public var audioTrack : int;
         /** a complete ID3 payload from PES, as a hex dump **/
         public var ID3Data : String;
+        public var fragment: Fragment;
 
         /** Assign event parameter and dispatch. **/
         public function HLSEvent(type : String, parameter : *=null, parameter2 : *=null) {
@@ -112,6 +114,9 @@ package org.mangui.hls.event {
                 case ERROR:
                 case WARNING:
                     error = parameter as HLSError;
+                    if(parameter2) {
+                        fragment = parameter2 as Fragment;
+                    }
                     break;
                 case TAGS_LOADED:
                 case FRAGMENT_LOADED:
