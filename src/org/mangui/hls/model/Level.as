@@ -2,12 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package org.mangui.hls.model {
-    CONFIG::LOGGING {
-        import org.mangui.hls.utils.Log;
-    }
-    import org.mangui.hls.utils.PTS;
+import org.mangui.hls.utils.PTS;
 
-    /** HLS streaming quality level. **/
+CONFIG::LOGGING {
+    import org.mangui.hls.utils.Log;
+}
+/** HLS streaming quality level. **/
     public class Level {
         /** audio only Level ? **/
         public var audio : Boolean;
@@ -322,14 +322,14 @@ package org.mangui.hls.model {
                         frag_from.duration = (frag_to.data.pts_start - from_pts) / 1000;
                         CONFIG::LOGGING {
                             if (frag_from.duration < 0) {
-                                Log.error("negative duration computed for " + frag_from + ", there should be some duration drift between playlist and fragment!");
+                                Log.error("negative duration computed for " + frag_from + ", there should be some duration drift between playlist and fragment! " + frag_from.url);
                             }
                         }
                     } else {
                         frag_to.duration = ( from_pts - frag_to.data.pts_start) / 1000;
                         CONFIG::LOGGING {
                             if (frag_to.duration < 0) {
-                                Log.error("negative duration computed for " + frag_to + ", there should be some duration drift between playlist and fragment!");
+                                Log.error("negative duration computed for " + frag_to + ", there should be some duration drift between playlist and fragment! " + frag_to.url);
                             }
                         }
                     }
