@@ -22,7 +22,7 @@ public class ZeroConfigHLSNetStream extends HLSNetStream {
     private var _pauseBeforeManifestLoaded:Boolean;
     private var _lastPauseTime:Number;
 
-    private var _seekPosition:Number = NaN;
+    private var _seekPosition:Number;
 
     public function ZeroConfigHLSNetStream() {
         super(createNetConnection(), (ZeroConfigHLS._netStream = this, _zeroHLS = new ZeroConfigHLS()), _zeroHLS._streamBuffer);
@@ -35,7 +35,6 @@ public class ZeroConfigHLSNetStream extends HLSNetStream {
     override public function play(...rest):void {
         if (rest[0] != _lastPlaylist || currentTimestamp - _lastPauseTime >= MAX_PAUSE_DELAY) {
             _lastPlaylist = rest[0];
-            _seekPosition = NaN;
             _zeroHLS.load(_lastPlaylist);
         } else if (_lastPlaylist) {
             super.resume();
