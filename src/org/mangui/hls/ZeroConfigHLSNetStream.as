@@ -119,6 +119,8 @@ public class ZeroConfigHLSNetStream extends HLSNetStream {
 
 import org.mangui.hls.HLS;
 import org.mangui.hls.ZeroConfigHLSNetStream;
+import org.mangui.hls.model.Fragment;
+import org.mangui.hls.model.Level;
 import org.mangui.hls.stream.HLSNetStream;
 
 class ZeroConfigHLS extends HLS {
@@ -129,5 +131,19 @@ class ZeroConfigHLS extends HLS {
 
     override protected function createNetStream():HLSNetStream {
         return _netStream;
+    }
+
+    public function get positionUtc():Number {
+        if (!levels || !levels[currentLevel]) {
+            return NaN;
+        }
+        var level:Level = levels[currentLevel];
+        var fragment:Fragment = level.fragments[0];
+        var results:Array = fragment.url.match(/-(\d{13}).ts/i);
+        if (results.length != 2) {
+            return NaN;
+        }
+        var timestamp:Number = results[1] / 1000;
+        return timestamp + position;
     }
 }
