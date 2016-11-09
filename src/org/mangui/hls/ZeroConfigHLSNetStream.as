@@ -135,15 +135,15 @@ class ZeroConfigHLS extends HLS {
 
     public function get positionUtc():Number {
         if (!levels || !levels[currentLevel]) {
-            return NaN;
+            return 0;
         }
         var level:Level = levels[currentLevel];
         var fragment:Fragment = level.fragments[0];
-        var results:Array = fragment.url.match(/-(\d{13}).ts/i);
-        if (results.length != 2) {
-            return NaN;
+
+        if (!fragment || !fragment.program_date) {
+            return 0;
         }
-        var timestamp:Number = results[1] / 1000;
-        return timestamp + position;
+
+        return Math.floor((position * 1000  + fragment.program_date + fragment.start_time * 1000) / 1000);
     }
 }
