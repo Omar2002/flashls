@@ -134,7 +134,7 @@ class ZeroConfigHLS extends HLS {
     }
 
     public function get positionUtc():Number {
-        if (!levels || !levels[currentLevel]) {
+        if (!levels || !levels.length || !levels[currentLevel]) {
             return 0;
         }
         var level:Level = levels[currentLevel];
