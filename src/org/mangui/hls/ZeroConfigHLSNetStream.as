@@ -138,6 +138,9 @@ class ZeroConfigHLS extends HLS {
             return 0;
         }
         var level:Level = levels[currentLevel];
+        if (!level.fragments || !level.fragments.length) {
+            return 0;
+        }
         var fragment:Fragment = level.fragments[0];
 
         if (!fragment || !fragment.program_date) {
